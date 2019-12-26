@@ -2,9 +2,9 @@
 Tic_Tac_Toe
 
 Description:
----------------
+-------------
 This is a Tic Tac Toe game. It is made to be played by two players sitting on the same computer
-and using the keys q,w,e,a,s,d,z,x,c as the table.
+and the keys q, w, e, a, s, d, z, x, c as a table.
 
      q | w | e     ->     o | x | x
     -----------          -----------                                                 
