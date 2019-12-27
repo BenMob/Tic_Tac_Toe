@@ -25,6 +25,33 @@ def draw_table(table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']):
         print('\t---------')
         print(f'\t{table[6]} | {table[7]} | {table[8]}\n')
 
+# ===============================================================
 
-def play():
-    pass
+def get_player_info():
+    '''
+    INPUT: none
+    TASK: gets player's name and sign
+    RETURN: A dictionary of names and signs
+    '''
+    # Getting player's names
+    player1_name = input('\nPlayer one username: ' )
+    player2_name = input('Player two username: ' )
+
+    # getting player's game signs
+    player1_sign = input(f'\n{player1_name.capitalize()}, enter your sign (o or x): ')
+    while player1_sign.lower() not in 'ox':
+        player1_sign = input('Incorrect sign, try again: ')
+
+    if player1_sign.lower() == 'x':
+        player2_sign = 'o'
+    else:
+        player2_sign = 'x'
+
+    # Printing info
+    print(f'\n{player1_name.capitalize()}: {player1_sign}\t {player2_name.capitalize()}: {player2_sign}\n')
+
+    return {'player1':{'name':player1_name, 'sign':player1_sign},
+            'player2':{'name':player2_name, 'sign':player2_sign}}
+
+
+print(get_player_info()['player2']['sign'])
