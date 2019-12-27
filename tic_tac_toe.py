@@ -26,6 +26,5 @@ def draw_table(table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']):
         print(f'\t{table[6]} | {table[7]} | {table[8]}\n')
 
 
-tb = ['x','x','o','x','o','o','x','o','o']
-#tb = [' ',' ',' ',' ',' ',' ',' ',' ',' ']
-help(draw_table)
+def play():
+    pass
