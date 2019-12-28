@@ -117,20 +117,23 @@ def play():
 
     # Game loop starts here
     while not game_over(table):
-        letter = getpass('')
-        clear()
-
+        
         # Determine players turns (Player1:Even, Player2:Odd)
         if isEven(turn):
+            letter = getpass(f"\t{players['player1']['name']} {players['player1']['sign']}\n")
             table = update_table(players['player1'], letter, table)
+            
         else:
+            letter = getpass(f"\t{players['player2']['name']} {players['player2']['sign']}\n")
             table = update_table(players['player2'], letter, table)
         
+        clear()
+
         # Draws updated table on the screen 
         draw_table(table)
         turn += 1
 
-    print('\nGame Over\n') 
+    print('\n\tGame Over\n') 
 
 # ===================================================================
 
