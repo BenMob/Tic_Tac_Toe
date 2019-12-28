@@ -12,6 +12,7 @@
 #                                                     z | x | c     ->     o | x | o
 
 from os import system, name
+from getpass import getpass
 
 def draw_table(table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']):
     '''
@@ -27,7 +28,7 @@ def draw_table(table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']):
         print('\t---------')
         print(f'\t{table[6]} | {table[7]} | {table[8]}\n')
 
-# =========================================================================================================
+# ==========================================================================================
 def get_players_info():
     '''
     INPUT: none
@@ -54,7 +55,7 @@ def get_players_info():
     return {'player1':{'name':player1_name, 'sign':player1_sign},
             'player2':{'name':player2_name, 'sign':player2_sign}}
 
-# ==========================================================================================================
+# =================================================================================================
 def clear():
     '''
     INPUT: None
@@ -68,7 +69,7 @@ def clear():
     else:
         _ = system('clear')
 
-# ==========================================================================================================
+# ================================================================================================
 def update_table(player, letter, table, letters = ('q','w','e','a','s','d','z','x','c')):
     '''
     INPUT: A valid letter, a sign(x or o), A list constituting the game table
@@ -81,23 +82,58 @@ def update_table(player, letter, table, letters = ('q','w','e','a','s','d','z','
         pass
     return table
 
-# QUICK TEST
-players = get_players_info()
-clear()
-draw_table()
-table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']
+# ========================================================================================
+def isEven(number):
+    '''
+    INPUT: Integer
+    RETURN: True if integer is even, otherwise False
+    '''
+    return (number % 2 == 0)
 
-for i in range(0,9):
+# ===================================================
+def game_over(table):
+    '''
+    INPUT: Table
+    RETURN: True if game is over, otherwise False
+    '''
+    return (' ' not in table or
+            (table[0] == table[1] == table[2]) and (' ' not in [table[0], table[1], table[2]]) or
+            (table[0] == table[4] == table[8]) and (' ' not in [table[0], table[4], table[8]]) or
+            (table[0] == table[3] == table[6]) and (' ' not in [table[0], table[3], table[6]]) or
+            (table[1] == table[4] == table[7]) and (' ' not in [table[1], table[4], table[7]]) or
+            (table[2] == table[4] == table[6]) and (' ' not in [table[2], table[4], table[6]]) or
+            (table[2] == table[5] == table[8]) and (' ' not in [table[2], table[5], table[8]]) or
+            (table[3] == table[4] == table[5]) and (' ' not in [table[3], table[4], table[5]]) or
+            (table[6] == table[7] == table[8]) and (' ' not in [table[6], table[7], table[8]]))
 
-    letter = input('Play: ')
+# ===================================================================
+def play():
+    # Getting players info and initializing table and turns
+    players = get_players_info()
     clear()
-    if i%2 == 0:
-        table = update_table(players['player1'], letter, table)
-    else:
-        table = update_table(players['player2'], letter, table)
+    draw_table()
+    table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']
+    turn = 0
+
+    # Game loop starts here
+    while not game_over(table):
+        letter = getpass('')
+        clear()
+
+        # Determine players turns (Player1:Even, Player2:Odd)
+        if isEven(turn):
+            table = update_table(players['player1'], letter, table)
+        else:
+            table = update_table(players['player2'], letter, table)
         
-    draw_table(table)
+        # Draws updated table on the screen 
+        draw_table(table)
+        turn += 1
+
+    print('\nGame Over\n') 
+
+# ===================================================================
+
+play()
 
     
-
-
