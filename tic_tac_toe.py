@@ -105,6 +105,20 @@ def game_over(table):
             (table[2] == table[5] == table[8]) and (' ' not in [table[2], table[5], table[8]]) or
             (table[3] == table[4] == table[5]) and (' ' not in [table[3], table[4], table[5]]) or
             (table[6] == table[7] == table[8]) and (' ' not in [table[6], table[7], table[8]]))
+# ===================================================
+def get_input(player, table, letters = ('q','w','e','a','s','d','z','x','c')):
+    '''
+    INPUT: A dictionary containing the current player's name and sign info
+    RETURN: A valid output for the game
+    '''
+    #Collecting input
+    valid_input = getpass(f"\t{player['name']} {player ['sign']}\n")
+
+    # Checking for validity of the input
+    while valid_input.lower() not in 'qweasdzxc':
+        valid_input = getpass('Invalid Input!')
+
+    return valid_input
 
 # ===================================================================
 def play():
@@ -120,11 +134,11 @@ def play():
         
         # Determine players turns (Player1:Even, Player2:Odd)
         if isEven(turn):
-            letter = getpass(f"\t{players['player1']['name']} {players['player1']['sign']}\n")
+            letter = get_input(players['player1'], table)
             table = update_table(players['player1'], letter, table)
             
         else:
-            letter = getpass(f"\t{players['player2']['name']} {players['player2']['sign']}\n")
+            letter = get_input(players['player2'], table)
             table = update_table(players['player2'], letter, table)
         
         clear()
