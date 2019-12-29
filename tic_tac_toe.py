@@ -16,12 +16,17 @@
 
 from os import system, name
 from getpass import getpass
+from random import randint
+
 # =============================DRAW_TABLE()========================================
-def draw_table(table = [' ',' ',' ',' ',' ',' ',' ',' ',' '], players = {'player1':{'name':'...', 'sign':'...'},'player2':{'name':'...', 'sign':'...'}}):
+def draw_table(table = [' '] * 9, players = {'player1':{'name':'...', 'sign':'...'},'player2':{'name':'...', 'sign':'...'}}):
     '''
     INPUT: (List of 9 characters), Optional Dictionary of players
     TASK: Prints tic tac toa table
     '''
+    # clears the screen befor drawing the table
+    clear_screen()
+
     if len(table) < 9:
         print('Incomplete Table!')
     else:
@@ -45,6 +50,9 @@ def get_players_info():
     TASK: gets player's name and sign
     RETURN: A dictionary of names and signs
     '''
+    # Welcome message
+    print('\n\tWELCOME TO TIC TAC TOE')
+
     # Getting player's names
     player1_name = input('\nPlayer one username: ' )
     player2_name = input('Player two username: ' )
@@ -59,8 +67,8 @@ def get_players_info():
     else:
         player2_sign = 'x'
 
-    # Printing info
-    print(f'\n{player1_name.capitalize()}: {player1_sign}\t {player2_name.capitalize()}: {player2_sign}\n')
+    #### Printing info
+    #### print(f'\n{player1_name.capitalize()}: {player1_sign}\t {player2_name.capitalize()}: {player2_sign}\n')
 
     return {'player1':{'name':player1_name, 'sign':player1_sign},
             'player2':{'name':player2_name, 'sign':player2_sign}}
@@ -128,10 +136,9 @@ def game_on(players):
     RETURN: Game winner
     '''
     # Setup Game Area
-    clear_screen()
-    table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']
+    table = [' ']*9
     draw_table(table, players)
-    turn = 0
+    turn = randint(0,1) # randomly picks who goes first (coin flip)
 
     # Game loop starts here
     while not game_over(table):
@@ -140,9 +147,6 @@ def game_on(players):
             table = execute_player_move(players['player1'], table)
         else:
             table = execute_player_move(players['player2'], table)
-
-        # clears the screen
-        clear_screen()
 
         # Draws updated table on the screen 
         draw_table(table, players)
@@ -196,7 +200,7 @@ def tic_tac_toe():
     while play_again():
         game_on(players)
 
-    print(f'\tGood Bye!\n')
+    print(f'\n\tGood Bye!\n')
 
 # GAME
 tic_tac_toe()
