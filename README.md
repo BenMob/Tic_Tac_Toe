@@ -22,7 +22,7 @@ List of Functions:
 1. tic_tac_toe()
 2. get_players_info()
 3. clear_screen()
-4. game_on(players)
+4. game_on()
 5. draw_table()
 6. execute_player_move()
 7. isEven()
