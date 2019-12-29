@@ -196,6 +196,8 @@ def tic_tac_toe():
     while play_again():
         game_on(players)
 
+    print(f'\tGood Bye!\n')
+
 # GAME
 tic_tac_toe()
 
