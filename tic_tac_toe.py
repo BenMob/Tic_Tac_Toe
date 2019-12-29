@@ -1,10 +1,13 @@
 # By Benjamin Ombeni
 # 
+# I will remember this Tic_Tac_Toe game as the first real Python project I ever built. After print('Hello World') of course :)
+#
 # Description:
 # ------------
 # This is a Tic Tac Toe game. It is made to be played by two players sitting on the same computer
-# and using the keys q,w,e,a,s,d,z,x,c as the table.
+# and using the keys q,w,e,a,s,d,z,x,c
 #
+# Example:
 # The table is designed as follow on the keyboard:    q | w | e     ->     o | x | x
 #                                                    -----------          -----------
 #                                                     a | s | f     ->     x | o | x
@@ -13,22 +16,29 @@
 
 from os import system, name
 from getpass import getpass
-
-def draw_table(table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']):
+# =============================DRAW_TABLE()========================================
+def draw_table(table = [' ',' ',' ',' ',' ',' ',' ',' ',' '], players = {'player1':{'name':'...', 'sign':'...'},'player2':{'name':'...', 'sign':'...'}}):
     '''
-    INPUT: (List of 9 characters)
+    INPUT: (List of 9 characters), Optional Dictionary of players
     TASK: Prints tic tac toa table
     '''
     if len(table) < 9:
-        print('Insufficient number of checks in TTT table!')
+        print('Incomplete Table!')
     else:
-        print(f'\n\t{table[0]} | {table[1]} | {table[2]}')
+        # prints date and players info
+        print('\n')
+        _ = system('date') 
+        print(f"\n\t\t\t{players['player1']['name']}: {players['player1']['sign']}")
+        print(f"\t\t\t{players['player2']['name']}: {players['player2']['sign']}\n")
+
+        # Draws the table
+        print(f'\t{table[0]} | {table[1]} | {table[2]}')
         print('\t---------')
         print(f'\t{table[3]} | {table[4]} | {table[5]}')
         print('\t---------')
         print(f'\t{table[6]} | {table[7]} | {table[8]}\n')
 
-# ==========================================================================================
+# =================================GET_PLAYERS_INFO()=========================================================
 def get_players_info():
     '''
     INPUT: none
@@ -55,8 +65,8 @@ def get_players_info():
     return {'player1':{'name':player1_name, 'sign':player1_sign},
             'player2':{'name':player2_name, 'sign':player2_sign}}
 
-# =================================================================================================
-def clear():
+# =============================CLEAR_SCREEN()=====================================
+def clear_screen():
     '''
     INPUT: None
     TASK: Clears the OS screen
@@ -69,28 +79,15 @@ def clear():
     else:
         _ = system('clear')
 
-# ================================================================================================
-def update_table(player, letter, table, letters = ('q','w','e','a','s','d','z','x','c')):
-    '''
-    INPUT: A valid letter, a sign(x or o), A list constituting the game table
-    TASK: Updates the list after each play
-    OUTPUT: Updated list
-    '''
-    if letter in letters and table[letters.index(letter) == ' ']:
-        table[letters.index(letter)] = player['sign']
-    else:
-        pass
-    return table
-
-# ========================================================================================
-def isEven(number):
+# =========================ISEVEN()=================================
+def isEven(turn):
     '''
     INPUT: Integer
     RETURN: True if integer is even, otherwise False
     '''
-    return (number % 2 == 0)
+    return (turn % 2 == 0)
 
-# ===================================================
+# =====================GAME_OVER()==============================
 def game_over(table):
     '''
     INPUT: Table
@@ -105,52 +102,104 @@ def game_over(table):
             (table[2] == table[5] == table[8]) and (' ' not in [table[2], table[5], table[8]]) or
             (table[3] == table[4] == table[5]) and (' ' not in [table[3], table[4], table[5]]) or
             (table[6] == table[7] == table[8]) and (' ' not in [table[6], table[7], table[8]]))
-# ===================================================
-def get_input(player, table, letters = ('q','w','e','a','s','d','z','x','c')):
+
+# ====================EXECUTE_PLAYER_MOVE()===============================
+def execute_player_move(player, table, letters = ('q','w','e','a','s','d','z','x','c')):
     '''
-    INPUT: A dictionary containing the current player's name and sign info
-    RETURN: A valid output for the game
+    INPUT: The current player dictionary, the game table list
+    RETURN: The game table list after the player's move has been executed
     '''
-    #Collecting input
-    valid_input = getpass(f"\t{player['name']} {player ['sign']}\n")
+    # Collecting input
+    letter = getpass(f"\t\t\t{player['name']}'s turn\n")
 
     # Checking for validity of the input
-    while valid_input.lower() not in 'qweasdzxc':
-        valid_input = getpass('Invalid Input!')
+    while letter.lower() not in letters or table[letters.index(letter)] != ' ':
+        letter = getpass('')
 
-    return valid_input
+    # Updating table
+    table[letters.index(letter)] = player['sign']
 
-# ===================================================================
-def play():
-    # Getting players info and initializing table and turns
-    players = get_players_info()
-    clear()
-    draw_table()
+    return table
+    
+# ============================GAME_ON()=======================================
+def game_on(players):
+    '''
+    INPUT: Players dictionary
+    RETURN: Game winner
+    '''
+    # Setup Game Area
+    clear_screen()
     table = [' ',' ',' ',' ',' ',' ',' ',' ',' ']
+    draw_table(table, players)
     turn = 0
 
     # Game loop starts here
     while not game_over(table):
-        
-        # Determine players turns (Player1:Even, Player2:Odd)
+        # Determines players turn (Player1:Even, Player2:Odd)
         if isEven(turn):
-            letter = get_input(players['player1'], table)
-            table = update_table(players['player1'], letter, table)
-            
+            table = execute_player_move(players['player1'], table)
         else:
-            letter = get_input(players['player2'], table)
-            table = update_table(players['player2'], letter, table)
-        
-        clear()
+            table = execute_player_move(players['player2'], table)
+
+        # clears the screen
+        clear_screen()
 
         # Draws updated table on the screen 
-        draw_table(table)
+        draw_table(table, players)
         turn += 1
 
-    print('\n\tGame Over\n') 
+    # Evaluates results and print them on the screen
+    evaluate_results(players,table,turn)
 
-# ===================================================================
+#===================EVALUATE_RESULTS()================================
+def evaluate_results(players,table, turn):
+    '''
+    INPUT: Players Dictionary , Game Table List, Last Play Turn Integer
+    RETURN: None
+    '''
+    if ' ' in table:
+        if isEven(turn):
+            print(f"\t\t\t{players['player2']['name']} Won!\n")
+        else:
+            print(f"\t\t\t{players['player1']['name']} Won!\n")
+    else:
+        print('\t\t\tTie!\n')
+# ===========================PLAY_AGAIN()=============================
+def play_again():
+    '''
+    INPUT: None
+    TASK: Determines wether current players want to play another game
+    RETURN: Boolean
+    '''
+    # Gets input from the user
+    valid_choices = {'y':True,'n':False}
+    choice = input('Would you like to play again (y or n): ')
 
-play()
+    # Checks for validity
+    while choice.lower() not in valid_choices.keys():
+        choice = input('Invalid input, try again (y or n): ')
+
+    return valid_choices[choice]
+    
+# ===========================TIC_TAC_TOE()========================================
+def tic_tac_toe():
+    '''
+    INPUT: None
+    TASK: Main Game Function
+    RETUEN: None
+    '''
+    # Getting players info 
+    players = get_players_info()
+    game_on(players)
+    
+    # Checks if the players want to keep playing
+    while play_again():
+        game_on(players)
+
+# GAME
+tic_tac_toe()
+
+
+
 
     
