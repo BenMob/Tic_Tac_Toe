@@ -99,17 +99,26 @@ def isEven(turn):
 def game_over(table):
     '''
     INPUT: Table
-    RETURN: True if game is over, otherwise False
+    RETURN: Tuple (True if game over, otherwise False, States of the game 'won', 'tied' or 'ongoing')
     '''
-    return (' ' not in table or
-            (table[0] == table[1] == table[2]) and (' ' not in [table[0], table[1], table[2]]) or
-            (table[0] == table[4] == table[8]) and (' ' not in [table[0], table[4], table[8]]) or
-            (table[0] == table[3] == table[6]) and (' ' not in [table[0], table[3], table[6]]) or
-            (table[1] == table[4] == table[7]) and (' ' not in [table[1], table[4], table[7]]) or
-            (table[2] == table[4] == table[6]) and (' ' not in [table[2], table[4], table[6]]) or
-            (table[2] == table[5] == table[8]) and (' ' not in [table[2], table[5], table[8]]) or
-            (table[3] == table[4] == table[5]) and (' ' not in [table[3], table[4], table[5]]) or
-            (table[6] == table[7] == table[8]) and (' ' not in [table[6], table[7], table[8]]))
+    # Won game
+    if((table[0] == table[1] == table[2]) and (' ' not in [table[0], table[1], table[2]]) or
+       (table[0] == table[4] == table[8]) and (' ' not in [table[0], table[4], table[8]]) or
+       (table[0] == table[3] == table[6]) and (' ' not in [table[0], table[3], table[6]]) or
+       (table[1] == table[4] == table[7]) and (' ' not in [table[1], table[4], table[7]]) or
+       (table[2] == table[4] == table[6]) and (' ' not in [table[2], table[4], table[6]]) or
+       (table[2] == table[5] == table[8]) and (' ' not in [table[2], table[5], table[8]]) or
+       (table[3] == table[4] == table[5]) and (' ' not in [table[3], table[4], table[5]]) or
+       (table[6] == table[7] == table[8]) and (' ' not in [table[6], table[7], table[8]])):
+       return(True, 'won')
+
+    # Tied Game
+    elif(' ' not in table):
+        return (True, 'tied')
+
+    # Ongoing Game
+    else:
+        return(False, 'ongoing')
 
 # ====================EXECUTE_PLAYER_MOVE()===============================
 def execute_player_move(player, table, letters = ('q','w','e','a','s','d','z','x','c')):
@@ -133,15 +142,15 @@ def execute_player_move(player, table, letters = ('q','w','e','a','s','d','z','x
 def game_on(players):
     '''
     INPUT: Players dictionary
-    RETURN: Game winner
+    RETURN: None
     '''
     # Setup Game Area
     table = [' ']*9
     draw_table(table, players)
     turn = randint(0,1) # randomly picks who goes first (coin flip)
 
-    # Game loop starts here
-    while not game_over(table):
+    # Game loop starts here (game_over returns a tuple with --> (bool, game state))
+    while not game_over(table)[0]:
         # Determines players turn (Player1:Even, Player2:Odd)
         if isEven(turn):
             table = execute_player_move(players['player1'], table)
@@ -153,21 +162,27 @@ def game_on(players):
         turn += 1
 
     # Evaluates results and print them on the screen
-    evaluate_results(players,table,turn)
+    evaluate_results(players, game_over(table)[1], turn)
 
 #===================EVALUATE_RESULTS()================================
-def evaluate_results(players,table, turn):
+def evaluate_results(players, game_state, turn):
     '''
-    INPUT: Players Dictionary , Game Table List, Last Play Turn Integer
+    INPUT: Players Dictionary , State of the game string (won or tied), Last Play Turn Integer
     RETURN: None
     '''
-    if ' ' in table:
+    # Game was won by one of the players
+    if game_state == 'won':
         if isEven(turn):
             print(f"\t\t\t{players['player2']['name']} Won!\n")
         else:
             print(f"\t\t\t{players['player1']['name']} Won!\n")
-    else:
+
+    # Game was tied
+    elif game_state == 'tied':
         print('\t\t\tTie!\n')
+
+    else:
+        print(f'Error: Invalid Game State!')
 # ===========================PLAY_AGAIN()=============================
 def play_again():
     '''
@@ -204,8 +219,3 @@ def tic_tac_toe():
 
 # GAME
 tic_tac_toe()
-
-
-
-
-    
